@@ -802,6 +802,10 @@
        ======================================================== */
     @media (max-width: 768px) {
       .app-container {
+        width: 100vw;
+        max-width: 100%;
+        overflow-x: hidden;
+        box-sizing: border-box;
         padding: max(8px, env(safe-area-inset-top)) 10px max(12px, env(safe-area-inset-bottom)) 10px;
         gap: 10px;
       }
@@ -826,8 +830,8 @@
         overflow: hidden;
       }
       .app-title {
-        font-size: 1.05rem;
-        letter-spacing: 0.05em;
+        font-size: 0.95rem;
+        letter-spacing: 0.04em;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -842,17 +846,20 @@
         display: none; /* スマホ縦画面では余計な縦スペースを取らないよう非表示 */
       }
       .ancient-crest {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
       }
       .header-actions {
         display: flex;
-        gap: 6px;
+        gap: 4px;
         flex-shrink: 0;
       }
       .btn-icon {
-        padding: 6px 9px;
-        font-size: 0.75rem;
+        padding: 6px 8px;
+        font-size: 0.72rem;
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
       }
       .header-sub-row {
         display: flex;
@@ -1043,14 +1050,26 @@
         font-size: 0.72rem;
         gap: 4px;
         white-space: nowrap;
+        padding: 4px 0;
       }
       .toggle-label input {
-        width: 14px;
-        height: 14px;
+        width: 16px;
+        height: 16px;
       }
       #btnOpenSkipped {
-        padding: 3px 8px;
-        font-size: 0.7rem;
+        padding: 5px 10px;
+        font-size: 0.74rem;
+        min-height: 34px;
+        display: inline-flex;
+        align-items: center;
+      }
+      #btnSkipCurrent {
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+        min-height: 36px !important;
+        border-radius: 14px !important;
+        display: inline-flex !important;
+        align-items: center !important;
       }
       .toggle-text-full { display: none; }
       .toggle-text-short { display: inline; }
@@ -1101,10 +1120,13 @@
         -webkit-overflow-scrolling: touch;
         width: 100%;
         margin: 10px 0;
+        border: 1px solid rgba(0, 229, 255, 0.2);
+        border-radius: 4px;
       }
       .tb-table {
         font-size: 0.74rem;
-        min-width: 380px;
+        min-width: 320px;
+        width: 100%;
       }
       .tb-h1 { font-size: 1.15rem; margin-bottom: 10px; }
       .tb-h2 { font-size: 1.02rem; margin: 16px 0 8px; }
@@ -1192,7 +1214,7 @@
         <div class="card-meta">
           <div class="meta-badges">
             <span class="category-badge" id="cardCategory">🌟 古代の知恵</span>
-            <button class="btn-icon" id="btnSkipCurrent" style="padding: 2px 7px; font-size: 0.7rem;">
+            <button class="btn-icon" id="btnSkipCurrent">
               <span>👁️ スキップ</span>
             </button>
           </div>
@@ -2465,7 +2487,18 @@
 
     // 初期化
     updateSkippedCountBadge();
-    setMode('tips');
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialMode = urlParams.get('mode');
+    if (initialMode === 'exam') {
+      setMode('exam');
+    } else {
+      setMode('tips');
+    }
+    if (urlParams.get('modal') === 'stats') {
+      btnOpenStats.click();
+    } else if (urlParams.get('modal') === 'textbook') {
+      btnOpenTextbook.click();
+    }
   </script>
 </body>
 </html>
