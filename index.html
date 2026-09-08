@@ -662,13 +662,18 @@
     .modal-overlay {
       display: none;
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(4, 7, 12, 0.85);
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      background: rgba(4, 7, 12, 0.88);
       backdrop-filter: blur(8px);
-      z-index: 100;
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
       justify-content: center;
       align-items: center;
       padding: 20px;
+      box-sizing: border-box;
     }
 
     .modal-card {
@@ -678,10 +683,12 @@
       border-radius: 8px;
       width: 100%;
       max-width: 860px;
-      max-height: 85vh;
+      max-height: min(88dvh, 85vh);
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      margin: auto;
+      box-sizing: border-box;
       animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -694,15 +701,16 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 24px;
+      padding: 14px 20px;
       border-bottom: 1px solid rgba(0, 229, 255, 0.25);
-      background: rgba(14, 22, 34, 0.7);
+      background: rgba(14, 22, 34, 0.85);
+      flex-shrink: 0;
     }
 
     .modal-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: var(--ancient-cyan);
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -712,18 +720,43 @@
       background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       cursor: pointer;
       line-height: 1;
-      padding: 4px;
+      padding: 6px 10px;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s;
     }
-    .modal-close-btn:hover { color: #ffffff; }
+    .modal-close-btn:hover, .modal-close-btn:active {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      text-shadow: 0 0 8px var(--ancient-cyan);
+    }
 
     .modal-body {
-      padding: 24px;
+      padding: 20px;
       overflow-y: auto;
-      flex-grow: 1;
+      flex: 1 1 auto;
+      min-height: 0;
       line-height: 1.7;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: rgba(14, 22, 34, 0.95);
+      border-top: 1px solid rgba(0, 229, 255, 0.2);
+      flex-shrink: 0;
     }
 
     /* 教科書内装飾 */
@@ -1074,43 +1107,66 @@
       .toggle-text-full { display: none; }
       .toggle-text-short { display: inline; }
 
-      /* モーダル */
+      /* モーダル：画面中央に美しく収め、下部見切れやボタン消失を完全防止 */
       .modal-overlay {
-        padding: 6px;
-        align-items: flex-end;
+        padding: max(12px, env(safe-area-inset-top)) 10px max(16px, env(safe-area-inset-bottom)) 10px;
+        align-items: center;
+        justify-content: center;
       }
       .modal-card {
-        max-height: 94vh;
-        border-radius: 12px 12px 0 0;
         width: 100%;
+        max-height: min(86dvh, calc(100% - 24px));
+        border-radius: 8px;
+        border: 1px solid var(--ancient-cyan);
+        margin: auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85), 0 0 20px var(--ancient-glow);
       }
       .modal-header {
-        padding: 10px 14px;
+        padding: 10px 12px;
       }
       .modal-title {
         font-size: 0.92rem;
       }
+      .modal-close-btn {
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 1.5rem;
+      }
       .modal-body {
-        padding: 12px 12px;
-        font-size: 0.85rem;
+        padding: 12px 10px;
+        font-size: 0.84rem;
         -webkit-overflow-scrolling: touch;
       }
-      .stats-summary-grid {
-        grid-template-columns: 1fr 1fr;
+      .modal-footer {
+        padding: 10px 12px;
         gap: 8px;
-        margin-bottom: 14px;
+        flex-direction: column-reverse;
+      }
+      .modal-footer .btn {
+        width: 100%;
+        min-height: 42px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .stats-summary-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 12px;
       }
       .stat-card {
-        padding: 10px 6px;
+        padding: 8px 4px;
       }
       .stat-val {
-        font-size: 1.35rem;
+        font-size: 1.15rem;
       }
       .stat-label {
-        font-size: 0.68rem;
+        font-size: 0.65rem;
       }
       .daily-history-table {
         font-size: 0.74rem;
+        min-width: 420px;
       }
       .daily-history-table th, .daily-history-table td {
         padding: 6px 4px;
@@ -1830,6 +1886,9 @@
 <hr class='tb-hr'/>
 <p class='tb-p'>*本書の内容を繰り返し通読・復習することで、G検定におけるいかなる難問・引っかけ問題にも即応できる真の合格力が身につきます。*</p>
       </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCloseTextbookFooter" style="min-height: 42px; width: 100%;">閉じる</button>
+      </div>
     </div>
   </div>
 
@@ -1859,7 +1918,7 @@
         </div>
 
         <h4 style="color: var(--ancient-gold); margin-bottom: 12px;">【日別学習ログ】</h4>
-        <div style="overflow-x: auto;">
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
           <table class="daily-history-table">
             <thead>
               <tr>
@@ -1877,6 +1936,9 @@
           </table>
         </div>
       </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCloseStatsFooter" style="min-height: 42px; width: 100%;">閉じる</button>
+      </div>
     </div>
   </div>
 
@@ -1893,6 +1955,9 @@
         <div id="skippedListContainer" style="display: flex; flex-direction: column; gap: 8px;">
           <!-- スキップ一覧が動的挿入 -->
         </div>
+      </div>
+      <div class="modal-footer" id="skippedModalFooter">
+        <!-- フッターアクション（全解除＆閉じる）が動的配置 -->
       </div>
     </div>
   </div>
@@ -2356,6 +2421,9 @@
     btnCloseTextbook.addEventListener('click', () => {
       textbookModal.style.display = 'none';
     });
+    document.getElementById('btnCloseTextbookFooter')?.addEventListener('click', () => {
+      textbookModal.style.display = 'none';
+    });
 
     // 成績モーダル表示
     btnOpenStats.addEventListener('click', () => {
@@ -2364,6 +2432,18 @@
     });
     btnCloseStats.addEventListener('click', () => {
       statsModal.style.display = 'none';
+    });
+    document.getElementById('btnCloseStatsFooter')?.addEventListener('click', () => {
+      statsModal.style.display = 'none';
+    });
+
+    // モーダルの背景（オーバーレイ）タップで即座に閉じる
+    [textbookModal, statsModal, skippedModal].forEach(m => {
+      m.addEventListener('click', (e) => {
+        if (e.target === m) {
+          m.style.display = 'none';
+        }
+      });
     });
 
     function renderStatsModal() {
@@ -2397,7 +2477,7 @@
               </div>
             </td>
             <td>
-              <button class="btn-icon" onclick="deleteDateStats('${d}')" title="この日の記録を削除してやり直す" style="padding: 3px 8px; font-size: 0.72rem; color: #ff6b81; border-color: rgba(255, 107, 129, 0.4);">
+              <button class="btn-icon" onclick="deleteDateStats('${d}')" title="この日の記録を削除してやり直す" style="padding: 5px 10px; font-size: 0.75rem; min-height: 34px; color: #ff6b81; border-color: rgba(255, 107, 129, 0.4);">
                 🗑️ 削除
               </button>
             </td>
@@ -2427,10 +2507,21 @@
     function renderSkippedModal() {
       const skippedSet = getSkippedSet();
       const container = document.getElementById('skippedListContainer');
+      const footer = document.getElementById('skippedModalFooter');
       container.innerHTML = '';
+      footer.innerHTML = '';
+
+      const btnClose = document.createElement('button');
+      btnClose.className = 'btn btn-secondary';
+      btnClose.style.cssText = 'min-height: 42px; width: 100%; font-size: 0.85rem;';
+      btnClose.textContent = '閉じる';
+      btnClose.addEventListener('click', () => {
+        skippedModal.style.display = 'none';
+      });
 
       if (skippedSet.size === 0) {
-        container.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 20px;">スキップされたTipsはありません。</p>';
+        container.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 24px;">スキップ指定されたTipsはありません。</p>';
+        footer.appendChild(btnClose);
         return;
       }
 
@@ -2442,7 +2533,7 @@
           <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px;">
             <strong style="color: var(--ancient-cyan);">#T${String(t.tip_id).padStart(4, '0')}</strong> ${t.title}
           </div>
-          <button class="btn-icon" style="flex-shrink: 0; padding: 3px 8px; font-size: 0.75rem;">復帰</button>
+          <button class="btn-icon" style="flex-shrink: 0; padding: 6px 12px; font-size: 0.78rem; min-height: 36px;">復帰</button>
         `;
         row.querySelector('button').addEventListener('click', () => {
           skippedSet.delete(t.tip_id);
@@ -2455,10 +2546,10 @@
         container.appendChild(row);
       });
 
-      // 全復帰ボタン
+      // 全復帰ボタン（常にフッターに固定配置され、画面外に見切れることなく押しやすい）
       const clearAllBtn = document.createElement('button');
       clearAllBtn.className = 'btn';
-      clearAllBtn.style.cssText = 'margin-top: 10px; width: 100%; border-color: var(--crimson-red); color: var(--crimson-red); font-size: 0.85rem; padding: 8px;';
+      clearAllBtn.style.cssText = 'width: 100%; border-color: var(--crimson-red); color: var(--crimson-red); font-size: 0.85rem; min-height: 42px;';
       clearAllBtn.textContent = 'すべてのスキップを解除（全復帰）';
       clearAllBtn.addEventListener('click', () => {
         saveSkippedSet(new Set());
@@ -2466,7 +2557,8 @@
         showToast('すべてのスキップを解除しました');
         renderCurrentItem();
       });
-      container.appendChild(clearAllBtn);
+      footer.appendChild(clearAllBtn);
+      footer.appendChild(btnClose);
     }
 
     // イベントリスナー設定
@@ -2498,6 +2590,8 @@
       btnOpenStats.click();
     } else if (urlParams.get('modal') === 'textbook') {
       btnOpenTextbook.click();
+    } else if (urlParams.get('modal') === 'skipped') {
+      btnOpenSkipped.click();
     }
   </script>
 </body>
